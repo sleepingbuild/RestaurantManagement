@@ -1,0 +1,60 @@
+package config;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+public class DatabaseConfig {
+    private String url;
+    private String username;
+    private String password;
+    private String driver;
+
+    public DatabaseConfig() {
+        Properties props = new Properties();
+        try {
+            InputStream input = getClass().getClassLoader().
+                    getResourceAsStream("db.properties");
+            if (input != null) {
+                props.load(input);
+                input.close();
+
+                this.driver = props.getProperty("db.driver");
+                this.url = props.getProperty("db.url");
+                this.username = props.getProperty("db.username");
+                this.password = props.getProperty("db.password");
+
+                System.out.println("Doc cau hinh tu db.properties thanh cong");
+            } else {
+                System.out.println("Khong tim thaya db.properties");
+                setDefaultConfig();
+            }
+        }catch(Exception e){
+            System.out.println("Loi doc cau hinh: " + e.getMessage());
+            setDefaultConfig();
+        }
+    }
+    private void setDefaultConfig() {
+        this.driver = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+        this.url = "jdbc:sqlserver://localhost:1433;databaseName=RestaurantDB";
+        this.username = "sa";
+        this.password = "123456"; // Đổi thành password của bạn
+
+        System.out.println("Dung cau hinh mac dinh");
+    }
+    // Getters
+    public String getUrl() { return url; }
+    public String getUsername() { return username; }
+    public String getPassword() { return password; }
+    public String getDriver() { return driver; }
+
+    // Test
+    public static void main(String[] args) {
+        DatabaseConfig config = new DatabaseConfig();
+        System.out.println("\n=== Thong cau hinh ===");
+        System.out.println("Driver: " + config.getDriver());
+        System.out.println("URL: " + config.getUrl());
+        System.out.println("Username: " + config.getUsername());
+        System.out.println("Password: " + config.getPassword());
+    }
+}
